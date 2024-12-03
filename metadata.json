@@ -2,9 +2,9 @@
   "name": "frankvandamme-btrfsmaintenance",
   "version": "0.1.0",
   "author": "frankvandamme",
-  "summary": "",
+  "summary": "Configures BTRFS maintenance jobs using btrfsmaintenance package (Debian family)",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/FrankVanDamme/puppet-btrfsmaintenance",
   "dependencies": [
 
   ],
