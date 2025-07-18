@@ -47,6 +47,9 @@
 # @param scrub_period
 #   How often to scrub:
 #
+# @param scrub_priority
+#   Priority of the scrub operation: idle,normal
+#
 # @param scrub_read_only
 #   Read-only means: do not try to fix (if true).
 #
@@ -63,37 +66,37 @@
 #   same time
 #
 class btrfsmaintenance (
-    Enum[none,stdout,journal,syslog] $log_output = "stdout",
+  Enum[none,stdout,journal,syslog] $log_output = 'stdout',
 
-    Array[Stdlib::Absolutepath] $defrag_paths = [],
-    Enum['none','daily','weekly','monthly'] $defrag_period = "none",
-    Pattern[/^\+\d+[kKmMgGtTpPeE]/] $defrag_min_size = "+1M",
+  Array[Stdlib::Absolutepath] $defrag_paths = [],
+  Enum['none','daily','weekly','monthly'] $defrag_period = 'none',
+  Pattern[/^\+\d+[kKmMgGtTpPeE]/] $defrag_min_size = '+1M',
 
-    Variant[Enum["auto"],Array[Stdlib::Absolutepath]] $balance_mountpoints = [],
-    Enum['none','daily','weekly','monthly'] $balance_period = "none",
-    Variant[Pattern[/^(\d* *)*$/],Array[Integer]] $balance_dusage = [5, 10, 20, 40],
-    Variant[Pattern[/^(\d* *)*$/],Array[Integer]] $balance_musage = [5, 20, 40],
+  Variant[Enum['auto'],Array[Stdlib::Absolutepath]] $balance_mountpoints = [],
+  Enum['none','daily','weekly','monthly'] $balance_period = 'none',
+  Variant[Pattern[/^(\d* *)*$/],Array[Integer]] $balance_dusage = [5, 10, 20, 40],
+  Variant[Pattern[/^(\d* *)*$/],Array[Integer]] $balance_musage = [5, 20, 40],
 
-    Variant[Enum["auto"],Array[Stdlib::Absolutepath]] $scrub_mountpoints = [],
-    Enum['none','daily','weekly','monthly'] $scrub_period = "monthly",
-    Enum['idle','normal'] $scrub_priority = "idle",
-    Boolean $scrub_read_only = false,
+  Variant[Enum['auto'],Array[Stdlib::Absolutepath]] $scrub_mountpoints = [],
+  Enum['none','daily','weekly','monthly'] $scrub_period = 'monthly',
+  Enum['idle','normal'] $scrub_priority = 'idle',
+  Boolean $scrub_read_only = false,
 
-    Enum['none','daily','weekly','monthly'] $trim_period = "none",
-    Variant[Enum["auto"],Array[Stdlib::Absolutepath]] $trim_mountpoints = "auto",
+  Enum['none','daily','weekly','monthly'] $trim_period = 'none',
+  Variant[Enum['auto'],Array[Stdlib::Absolutepath]] $trim_mountpoints = 'auto',
 
-    Boolean $allow_concurrency = false,
+  Boolean $allow_concurrency = false,
 
-){
-    package { "btrfsmaintenance":
-        ensure => present,
-    }
-    -> file { "/etc/default/btrfsmaintenance":
-        content => template("${module_name}/default.erb"),
-    }
-    ~> exec {"refresh btrfsmaintenance timers":
-        refreshonly => true,
-        command     => "systemctl restart btrfsmaintenance-refresh",
-        path        => "/sbin:/usr/sbin:/bin:/usr/bin",
-    }
+) {
+  package { 'btrfsmaintenance':
+    ensure => present,
+  }
+  -> file { '/etc/default/btrfsmaintenance':
+    content => template("${module_name}/default.erb"),
+  }
+  ~> exec { 'refresh btrfsmaintenance timers':
+    refreshonly => true,
+    command     => 'systemctl restart btrfsmaintenance-refresh',
+    path        => '/sbin:/usr/sbin:/bin:/usr/bin',
+  }
 }
